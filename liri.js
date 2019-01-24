@@ -35,7 +35,7 @@ switch (action) {
     break;
 
   case "do-what-it-says":
-    doWhatItSays(value);
+    doWhatItSays();
     break;
 }
 
@@ -82,6 +82,9 @@ function spotifyThisSong(value) {
 
 
 function movieThis(value) {
+  if (!value){
+    value = "Mr\. Nobody";
+  }
   axios.get(`http://www.omdbapi.com/?t=${value}&y=&plot=short&apikey=trilogy`).then(
     function (response) {
       console.log("Name of movie: " + response.data.Title);
@@ -92,4 +95,33 @@ function movieThis(value) {
       console.log("Actors: " + response.data.Actors);
     }
   );
+}
+
+function doWhatItSays(){
+  fs.readFile("random.txt", "utf8", function(error, data) {
+    if (error) {
+      return console.log(error);
+    }
+    console.log(data);
+    var dataArr = data.split(",");
+    var funk = dataArr[0];
+    var variable = dataArr[1];
+    switch (funk) {
+      case "concert-this":
+        concertThis(variable);
+        break;
+    
+      case "spotify-this-song":
+        spotifyThisSong(variable);
+        break;
+    
+      case "movie-this":
+        movieThis(variable);
+        break;
+    
+      case "do-what-it-says":
+        doWhatItSays();
+        break;
+    }
+  })
 }
