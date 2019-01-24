@@ -7,6 +7,8 @@ var fs = require("fs");
 var action = process.argv[2];
 var nodeArgs = process.argv;
 var value = '';
+var spotify = new Spotify(keys.spotify);
+
 
 for (var i = 3; i < nodeArgs.length; i++) {
   if (i > 3 && i < nodeArgs.length) {
@@ -16,14 +18,7 @@ for (var i = 3; i < nodeArgs.length; i++) {
   }
 }
 
- 
-spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
-  if (err) {
-    return console.log('Error occurred: ' + err);
-  }
- 
-console.log(data); 
-});
+
 
 // The switch-case will direct which function gets run.
 switch (action) {
@@ -59,14 +54,31 @@ function concertThis(value) {
   );
 }
 
-spotify
-  .request('https://api.spotify.com/v1/tracks/7yCPwWs66K8Ba5lFuU2bcx')
-  .then(function(data) {
-    console.log(data); 
-  })
-  .catch(function(err) {
-    console.error('Error occurred: ' + err); 
-  });
+function spotifyThisSong(value) {
+  if (!value){
+    value = "Ace of Base";
+  }
+  spotify
+    .search({
+      type: 'track',
+      query: `${value}`
+    })
+    .then(function (response) {
+      console.log("Artists include: ")
+      for(i= 0; i < response.tracks.items[0].artists.length; i++){
+        console.log(response.tracks.items[0].artists[i].name);
+      }
+      console.log('------------');
+      console.log("Name of song:");
+      console.log(response.tracks.items[0].name);
+      console.log('------------');
+      console.log("Preview Link:");
+      console.log(response.tracks.items[0].preview_url);
+      console.log('------------');
+      console.log("Album:");
+      console.log(response.tracks.items[0].album.name);
+    })
+}
 
 
 function movieThis(value) {
